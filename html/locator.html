@@ -6,6 +6,15 @@
 	</head>
 	<body>
 		<h1>Cebu Restaurant Locator</h1>
+		<div>
+			<div>
+				<b><label># of records found:</label><b>
+				<label id="found"></label>
+			</div>
+
+			<label>Filter By:</label>
+			
+		</div>
 
 		<!-- map container -->
 		<div id="cebu_map" style="width:100%;height:500px;"></div>
@@ -43,6 +52,10 @@
 
       		// callback which calls for function that creates the marker
 	        function callback(results, status) {
+	        	// display # of records found
+	        	document.getElementById("found").innerHTML = results.length;
+
+
 	         	if (status === google.maps.places.PlacesServiceStatus.OK) {
 	                for (var i = 0; i < results.length; i++) {
 	                    createMarker(results[i]);
@@ -51,7 +64,7 @@
 	        }
 
 	        // plots the marker in the map
-            function createMarker(place) {console.log(place);
+            function createMarker(place) {
 	            var placeLoc = place.geometry.location;
 	            var marker = new google.maps.Marker({
 	                map : map,
@@ -74,21 +87,6 @@
 	               
 	            });				 
 			}
-
-			 function drawOnclick() {
-    // alert("clicked");
-    var antennasCircle = new google.maps.Circle({
-      strokeColor: "#FF0000",
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: "#FF0000",
-      fillOpacity: 0.35,
-      map: map,
-      center:current_location,
-      radius: radius
-    });
-    map.fitBounds(antennasCircle.getBounds());
-  }
 		</script>
 
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdQ6z7iZymEnrZl46vWub1-6K0y6uYP6U&libraries=places&callback=initializeMap"></script>
