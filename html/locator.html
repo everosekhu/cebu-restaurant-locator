@@ -61,19 +61,10 @@
 	            // create info window content   
 			    var info_window_content = '<div class="info_content">'
 			        + '<h3>' + place.name + '</h3>'
-			         + '<div>';
-
-			        // check if its open
-			        if(place.open_now == true) {
-			        	info_window_content += 'Open Now';
-			        } else {
-			        	info_window_content += 'Currently Close';
-			        }
-
-
-			        info_window_content += 'place.photos[0]'
-			        + 	'<br><b>Location</b>: ' + place.vicinity
-			        + 	'<br>'
+			        + '<div>'
+			        	+ 	'<b>Location</b>: ' + place.vicinity
+			        	+ 	'<br><b>Rating</b>: ' + place.rating
+			        	+ 	'<br>'
 			        + '</div>' +
 			    '</div>';
 
