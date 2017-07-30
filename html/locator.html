@@ -9,7 +9,6 @@
 		<!-- load css -->
 		<link rel="stylesheet" href="../assets/css/styles.css">
 
-
 	</head>
 	<body>
 		<h1>Cebu Restaurant Locator</h1>
@@ -36,43 +35,43 @@
 				<div id="filter_restaurant_container" class="filter">
 					<b><label>Filter Restaurant:</label></b>
 					<label class="radio-inline">
-					  	<input type="radio" name="filter_restaurant" value="Bistro"> Bistro
+					  	<input type="radio" name="filter_restaurant" value="Bistro" onclick="filterRestaurants(this)"> Bistro
 					</label>
 
 					<label class="radio-inline">
-						<input type="radio" name="filter_restaurant" value="Cafe"> Cafe
+						<input type="radio" name="filter_restaurant" value="Cafe" onclick="filterRestaurants(this)"> Cafe
 					</label>
 
 					<label class="radio-inline">
-						<input type="radio" name="filter_restaurant" value="Delicatessen"> Delicatessen
+						<input type="radio" name="filter_restaurant" value="Delicatessen" onclick="filterRestaurants(this)"> Delicatessen
 					</label>
 
 					<label class="radio-inline">
-					  	<input type="radio" name="filter_restaurant" value="Fastfood"> Fastfood
+					  	<input type="radio" name="filter_restaurant" value="Fastfood" onclick="filterRestaurants(this)"> Fastfood
 					</label>
 
 					<label class="radio-inline">
-						<input type="radio" name="filter_restaurant" value="Pancake House"> Pancake House
+						<input type="radio" name="filter_restaurant" value="Pancake House" onclick="filterRestaurants(this)"> Pancake House
 					</label>
 
 					<label class="radio-inline">
-						<input type="radio" name="filter_restaurant" value="Pizzeria"> Pizzeria
+						<input type="radio" name="filter_restaurant" value="Pizzeria" onclick="filterRestaurants(this)"> Pizzeria
 					</label>
 
 					<label class="radio-inline">
-						<input type="radio" name="filter_restaurant" value="Pub"> Pub
+						<input type="radio" name="filter_restaurant" value="Pub" onclick="filterRestaurants(this)"> Pub
 					</label>
 
 					<label class="radio-inline">
-					  	<input type="radio" name="filter_restaurant" value="Sandwich Bar"> Sandwich Bar
+					  	<input type="radio" name="filter_restaurant" value="Sandwich Bar" onclick="filterRestaurants(this)"> Sandwich Bar
 					</label>
 
 					<label class="radio-inline">
-						<input type="radio" name="filter_restaurant" value="Steakhouse"> Steakhouse
+						<input type="radio" name="filter_restaurant" value="Steakhouse" onclick="filterRestaurants(this)"> Steakhouse
 					</label>
 
 					<label class="radio-inline">
-						<input type="radio" name="filter_restaurant" value="Tratorria"> Tratorria
+						<input type="radio" name="filter_restaurant" value="Tratorria" onclick="filterRestaurants(this)"> Tratorria
 					</label>
 					
 				</div>				
@@ -117,6 +116,7 @@
 	            // get coordinates of location clicked on the map
 	            google.maps.event.addListener(map, 'click', function(event) {
 	            	var new_location = {lat: event.latLng.lat(), lng: event.latLng.lng()};
+	            	removeMarkers();
 	            	removeCircle();
 	            	showCircle(new_location);
 
@@ -162,6 +162,9 @@
 	                    	+ '</option>');
 			        }
 			    }
+
+			    // display # of results found
+	        	document.getElementById("found").innerHTML = results.data.length;
 
 		        // append restaurant options
                 addDestinationOptions(restaurant_locations);
@@ -347,6 +350,7 @@
 	    		// loop through all mock data
 	    		// compute distance and get only those within the radius
 	    		for (var i = 0; i < mock_data.length; i++) {
+	    			createMarker(mock_data[i]);
 	    			_pCord = new google.maps.LatLng(mock_data[i].geometry.coordinates.lat, mock_data[i].geometry.coordinates.lng);
 
 	    			// compute the distance
@@ -358,6 +362,26 @@
 	    		}
 
 	    		return num_found;
+	    	}
+
+	    	// filter restaurants
+	    	function filterRestaurants(obj) {
+	    		removeMarkers();
+	    		removeCircle();
+
+	    		var count = 0;
+
+	    		// loop through all mock data
+	    		for (var i = 0; i < mock_data.length; i++) {
+	    			// get only restos matching the selected type
+	    			if(mock_data[i].type == obj.value) {
+	    				createMarker(mock_data[i]);
+	    				count++;
+	    			}
+	    		}
+
+	    		// display # of results found
+	        	document.getElementById("found").innerHTML = count;
 	    	}
 
 		</script>
