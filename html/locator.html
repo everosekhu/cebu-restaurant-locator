@@ -94,7 +94,7 @@
 			var cityCircle, markers_arr = [];
 			var autocomplete, destination_lat, destination_lng;
 			var directionsDisplay, directionsService;
-			var restaurant_locations = [];
+			var restaurant_locations = [], mock_data = [];
 
 			function initializeMap() {
 				directionsService = new google.maps.DirectionsService();
@@ -121,7 +121,7 @@
 	            	showCircle(new_location);
 
 	            	// display # of records found within the circle
-	        		document.getElementById("found").innerHTML = countFound();		            
+	        		document.getElementById("found").innerHTML = countFound(new_location);		            
 				});
 
 	            // Create a <script> tag
@@ -146,6 +146,7 @@
 	        	// check if we have results
 	        	if(results.data.length > 0) {
 	        		restaurant_locations.push('<option>Select Destination</option>');
+	        		mock_data = results.data;
 
 			        for (var i = 0; i < results.data.length; i++) {
 		        		createMarker(results.data[i]);
@@ -337,8 +338,24 @@
 	    	}
 
 	    	// counts the number of restaurants within the circle
-	    	function countFound() {
+	    	function countFound(location) {
 	    		var num_found = 0;
+	    		var _pCord, distance;
+	    		var _kCord = new google.maps.LatLng(location.lat, location.lng);
+    
+
+	    		// loop through all mock data
+	    		// compute distance and get only those within the radius
+	    		for (var i = 0; i < mock_data.length; i++) {
+	    			_pCord = new google.maps.LatLng(mock_data[i].geometry.coordinates.lat, mock_data[i].geometry.coordinates.lng);
+
+	    			// compute the distance
+	    			distance = google.maps.geometry.spherical.computeDistanceBetween(_pCord, _kCord);
+
+	    			if(distance <= radius) {
+	    				num_found++;
+	    			}
+	    		}
 
 	    		return num_found;
 	    	}
