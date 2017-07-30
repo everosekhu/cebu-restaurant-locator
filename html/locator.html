@@ -271,11 +271,14 @@
 	        		document.getElementById('error_container').style.display = 'block';
 	        		document.getElementById('error_container').innerHTML = 'Please set current location.';
 
-	        		return false;
-	        	} else if(destination_lat == null) {
-	        		// check if end point dont have value
-	        		document.getElementById('error_container').style.visibility = 'visible';
+	        		return;
+	        	} 
+
+	        	if(destination_lat == null) {
+	        		document.getElementById('error_container').style.display = 'block';
 	        		document.getElementById('error_container').innerHTML = 'Please select destination.';
+
+	        		return;
 	        	}
 
 
@@ -339,25 +342,6 @@
 
 	    		return num_found;
 	    	}
-
-	    	// set restaurant types
-			function setRestaurantTypes() {
-				var restaurant_types = ["Bistro", "Cafe", "Delicatessen", "Fastfood", "Pancake House", "Pizzeria", "Pub", "Sandwich Bar", "Steakhouse", "Tratorria"];
-
-				// append types to html
-				var cb = '';
-				restaurant_types.forEach(  
-				    function appendCheckbox(value) {
-				    	cb = '<label class="radio-inline">'
-				    		+ '<input type="radio" name="filter_restaurant" value="' + value + '">'
-				    		+ value
-				    		+ '</label>';
-				    	
-				    }  
-				);  
-
-				document.getElementById('filter_restaurant_container').appendChild(cb);
-			}
 
 		</script>
 
