@@ -5,14 +5,82 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+		<!-- load css -->
+		<link rel="stylesheet" href="../assets/css/styles.css">
+
+
 	</head>
 	<body>
 		<h1>Cebu Restaurant Locator</h1>
 		<div>
 			<div>
-				<b><label># of Restaurants found:</label><b>
+				<b><label># of Restaurants found:</label></b>
 				<label id="found"></label>
-			</div>		
+			</div>
+
+			<!-- container for direction options -->
+			<div class="direction">
+				<div>
+					<b><label>Current Location:</label></b>
+					<input id="user_location" type="text" size="50" autocomplete="off">
+				</div>
+				<div>
+					<b><label>Destination:</label></b>
+					<select id="select_destination" class="selectpicker" title="Select Destination">
+						
+					</select>
+					<input id="get_direction" type="button" value="Get Direction">
+				</div>
+
+				<div id="filter_restaurant_container" class="filter">
+					<b><label>Filter Restaurant:</label></b>
+					<label class="radio-inline">
+					  	<input type="radio" name="filter_restaurant" value="Bistro"> Bistro
+					</label>
+
+					<label class="radio-inline">
+						<input type="radio" name="filter_restaurant" value="Cafe"> Cafe
+					</label>
+
+					<label class="radio-inline">
+						<input type="radio" name="filter_restaurant" value="Delicatessen"> Delicatessen
+					</label>
+
+					<label class="radio-inline">
+					  	<input type="radio" name="filter_restaurant" value="Fastfood"> Fastfood
+					</label>
+
+					<label class="radio-inline">
+						<input type="radio" name="filter_restaurant" value="Pancake House"> Pancake House
+					</label>
+
+					<label class="radio-inline">
+						<input type="radio" name="filter_restaurant" value="Pizzeria"> Pizzeria
+					</label>
+
+					<label class="radio-inline">
+						<input type="radio" name="filter_restaurant" value="Pub"> Pub
+					</label>
+
+					<label class="radio-inline">
+					  	<input type="radio" name="filter_restaurant" value="Sandwich Bar"> Sandwich Bar
+					</label>
+
+					<label class="radio-inline">
+						<input type="radio" name="filter_restaurant" value="Steakhouse"> Steakhouse
+					</label>
+
+					<label class="radio-inline">
+						<input type="radio" name="filter_restaurant" value="Tratorria"> Tratorria
+					</label>
+					
+				</div>				
+
+				<!-- error container -->
+				<div id="error_container" class="error"></div>
+			</div>
+			
 		</div>
 
 		<!-- map container -->
@@ -24,61 +92,92 @@
 			var map_options, map, service, info_window, bounds;	
 			var radius = 1000;
 			var cityCircle, markers_arr = [];
+			var autocomplete, destination_lat, destination_lng;
+			var directionsDisplay, directionsService;
+			var restaurant_locations = [];
 
 			function initializeMap() {
-				
-
+				directionsService = new google.maps.DirectionsService();
+				directionsDisplay = new google.maps.DirectionsRenderer();
 				map_options= {
 				   	center: new google.maps.LatLng(10.31111,123.89167),
-			   		zoom:15,
+			   		zoom: 15,
 			   		mapTypeId: google.maps.MapTypeId.ROADMAP,
-			   		type: 'restaurant',
-			   		radius: 50000
+			   		
+			   		//radius: 50000,
+			   		componentRestrictions: {country: 'PH'}
 				};
 			
-				map = new google.maps.Map(document.getElementById("cebu_map"),map_options);
+				map = new google.maps.Map(document.getElementById("cebu_map"), map_options);
+				directionsDisplay.setMap(map);
 
-
+				// initialize marker info window
 				info_window = new google.maps.InfoWindow();
 		
-
 	            // get coordinates of location clicked on the map
 	            google.maps.event.addListener(map, 'click', function(event) {
 	            	var new_location = {lat: event.latLng.lat(), lng: event.latLng.lng()};
 	            	removeCircle();
 	            	showCircle(new_location);
 
-	            	// search for nearby establishments
-	            	service = new google.maps.places.PlacesService(map);
-		            service.nearbySearch({
-		                location : new_location,
-		                radius : radius,
-		                type : [ 'restaurant' ]
-		            }, callback);
-					});
+	            	// display # of records found within the circle
+	        		document.getElementById("found").innerHTML = countFound();		            
+				});
 
-		        
+	            // Create a <script> tag
+				var script = document.createElement('script');
+        
+       			// get mock data
+		        script.src = '../assets/js/mock_data.js';
+		        document.getElementsByTagName('head')[0].appendChild(script);
+
+
+		        // autocomplete for users current location
+				var input = document.getElementById('user_location');
+ 				autocomplete = new google.maps.places.Autocomplete(input, map_options);
+
+
+	            // listener for direction from user current location to selected destination
+	            google.maps.event.addDomListener(document.getElementById('get_direction'), 'click', showRoute);
       		}
 
-      		// callback which calls for function that creates the marker
-	        function callback(results, status) {
-	        	// display # of records found
-	        	document.getElementById("found").innerHTML = results.length;
-	        	removeMarkers();
+	        // show markers in map
+	        window.mock_data_callback = function(results) {
+	        	// check if we have results
+	        	if(results.data.length > 0) {
+	        		restaurant_locations.push('<option>Select Destination</option>');
 
-	         	if (status === google.maps.places.PlacesServiceStatus.OK) {
-	                for (var i = 0; i < results.length; i++) {
-	                    createMarker(results[i]);
-	                }
-	            }
-	        }
+			        for (var i = 0; i < results.data.length; i++) {
+		        		createMarker(results.data[i]);
+
+		        		// set option content
+	                    restaurant_locations.push(
+	                    	'<option'
+	                    		+ ' data-lat="' + results.data[i].geometry.coordinates.lat
+	                    		+ '" data-lng="' + results.data[i].geometry.coordinates.lng
+	                    		+ '">'
+	                    		+ results.data[i].name 
+	                    		+ ' -> ' + results.data[i].vicinity
+	                    	+ '</option>');
+			        }
+			    }
+
+		        // append restaurant options
+                addDestinationOptions(restaurant_locations);
+		    }
 
 	        // plots the marker in the map
             function createMarker(place) {
-	            var placeLoc = place.geometry.location;
+
+            	// get default pin image
+            	var pin_image = getDefaultPinImage();
+
+	            var coords = place.geometry.coordinates;
+	            var latLng = new google.maps.LatLng(coords.lat, coords.lng);
 	            var marker = new google.maps.Marker({
 	                map : map,
-	                position : place.geometry.location
+	                position : latLng,
+	                icon: pin_image,
 	            });
 
 	            // check if we have a rating
@@ -87,17 +186,26 @@
 	            	rating = '';
 	            }
 
+	            // format specialty
+	            var specialty = '';
+	            if(place.specialty.length > 0) {
+	            	specialty = place.specialty.join();
+	            }
+
+
 	            // create info window content   
 			    var info_window_content = '<div class="info_content">'
 			        + '<h3>' + place.name + '</h3>'
 			        + '<div>'
-			        	+ 	'<b>Location</b>: ' + place.vicinity
-			        	+ 	'<br><b>Rating</b>: ' + rating
+			        	+ 	'<b>Location:</b> ' + place.vicinity
+			        	+ 	'<br><b>Type:</b> ' + place.type
+			        	+ 	'<br><b>Specialty:</b> ' + specialty
+			        	+ 	'<br><b>Rating:</b> ' + rating
 			        	+ 	'<br>'
 			        + '</div>' +
 			    '</div>';
 
-	            google.maps.event.addListener(marker, 'click', function() {console.log(place);
+	            google.maps.event.addListener(marker, 'click', function() {
 	                info_window.setContent(info_window_content);
 	                info_window.open(map, this);
 	               
@@ -118,6 +226,8 @@
 
 			// adds a circle around a selected area
 			function showCircle(location) {
+				clearRoutes();
+
 				cityCircle = new google.maps.Circle({
 		            strokeColor: '#FF0000',
 		            strokeOpacity: 0.8,
@@ -138,8 +248,119 @@
 		        	cityCircle.setMap(null);
 		        }
 	        }
+
+	        // append restaurant locations to destination options
+	        function addDestinationOptions(options) {
+	        	// empty current list options
+	        	document.getElementById('select_destination').innerHTML = '';
+
+	        	// append restaurant location
+	        	document.getElementById('select_destination').innerHTML = options;
+	        }
+
+	        // add direction from current location to destination restaurant
+	        function showRoute() {
+	        	// get currently selected dstination
+	        	getDestinationLatLng();
+
+	        	document.getElementById('error_container').style.display = 'none';
+	        	document.getElementById('error_container').innerHTML = '';
+
+	        	// check if we have a valid start and end points
+	        	if(autocomplete.getPlace() == undefined) {
+	        		document.getElementById('error_container').style.display = 'block';
+	        		document.getElementById('error_container').innerHTML = 'Please set current location.';
+
+	        		return false;
+	        	} else if(destination_lat == null) {
+	        		// check if end point dont have value
+	        		document.getElementById('error_container').style.visibility = 'visible';
+	        		document.getElementById('error_container').innerHTML = 'Please select destination.';
+	        	}
+
+
+	        	removeCircle();
+        		var start = new google.maps.LatLng(autocomplete.getPlace().geometry.location.lat(), autocomplete.getPlace().geometry.location.lng());
+        		var end = new google.maps.LatLng(destination_lat, destination_lng);
+        		
+        		var bounds = new google.maps.LatLngBounds();
+		        bounds.extend(start);
+		        bounds.extend(end);
+		        map.fitBounds(bounds);
+		        var request = {
+		            origin: start,
+		            destination: end,
+		            travelMode: google.maps.TravelMode.DRIVING
+		        };
+		        directionsService.route(request, function (response, status) {
+		            if (status == google.maps.DirectionsStatus.OK) {
+		                directionsDisplay.setDirections(response);
+		                directionsDisplay.setMap(map);
+		            } else {
+		                document.getElementById('error_container').style.display = 'block';
+		        		document.getElementById('error_container').innerHTML = 'Please select destination.';
+
+		        		return false;
+		            }
+		        });
+   
+    		}
+
+    		// Clear past routes
+    		function clearRoutes() {
+			    if (directionsDisplay != null) {
+			        directionsDisplay.setMap(null);
+			    }
+    		}
+
+    		// get coordinates of selected destination
+	    	function getDestinationLatLng() {
+	    		var select_des = document.getElementById("select_destination");
+	  			destination_lat = select_des.options[select_des.selectedIndex].getAttribute('data-lat');
+	  			destination_lng = select_des.options[select_des.selectedIndex].getAttribute('data-lng');
+	    	}
+
+	    	// get default Pin Image
+	    	function getDefaultPinImage() {
+	    		// set default pin
+            	var pin_color = "fffb14";
+    			var pin_image = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pin_color,
+			        new google.maps.Size(21, 34),
+			        new google.maps.Point(0,0),
+			        new google.maps.Point(10, 34)
+			    );
+
+			    return pin_image;
+	    	}
+
+	    	// counts the number of restaurants within the circle
+	    	function countFound() {
+	    		var num_found = 0;
+
+	    		return num_found;
+	    	}
+
+	    	// set restaurant types
+			function setRestaurantTypes() {
+				var restaurant_types = ["Bistro", "Cafe", "Delicatessen", "Fastfood", "Pancake House", "Pizzeria", "Pub", "Sandwich Bar", "Steakhouse", "Tratorria"];
+
+				// append types to html
+				var cb = '';
+				restaurant_types.forEach(  
+				    function appendCheckbox(value) {
+				    	cb = '<label class="radio-inline">'
+				    		+ '<input type="radio" name="filter_restaurant" value="' + value + '">'
+				    		+ value
+				    		+ '</label>';
+				    	
+				    }  
+				);  
+
+				document.getElementById('filter_restaurant_container').appendChild(cb);
+			}
+
 		</script>
 
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdQ6z7iZymEnrZl46vWub1-6K0y6uYP6U&libraries=places&callback=initializeMap"></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdQ6z7iZymEnrZl46vWub1-6K0y6uYP6U&libraries=places,geometry,drawing&callback=initializeMap"></script>
 	</body>
 </html>
