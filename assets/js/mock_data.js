@@ -476,7 +476,7 @@ mock_data_callback(
 				"name": "Convallis Institute",
 				"visits": 189,
 				"rating": 4.2,
-				"vicinity": "Juana Osmeña Street, Cebu City",
+				"vicinity": "Juana Osme&#241a Street, Cebu City",
 				"geometry": {
 	        		"type": "Point",
 	        		"coordinates": {
@@ -924,7 +924,7 @@ mock_data_callback(
 				"name": "Metus LLC",
 				"visits": 306,
 				"rating": 1.1,
-				"vicinity": "Osmeña Blvd, Cebu City, Cebu",
+				"vicinity": "Osme&#241a Blvd, Cebu City, Cebu",
 				"geometry": {
 	        		"type": "Point",
 	        		"coordinates": {
@@ -1107,7 +1107,7 @@ mock_data_callback(
 				"name": "Erat LLC",
 				"visits": 241,
 				"rating": 4.8,
-				"vicinity": "Juana Osmeña St, Cebu City, Cebu",
+				"vicinity": "Juana Osme&#241a St, Cebu City, Cebu",
 				"geometry": {
 	        		"type": "Point",
 	        		"coordinates": {
@@ -1126,7 +1126,7 @@ mock_data_callback(
 				"name": "Nibh PC",
 				"visits": 347,
 				"rating": 3.3,
-				"vicinity": "Century Plaza Complex, Juana Osmeña St, Cebu City, 6000 Cebu",
+				"vicinity": "Century Plaza Complex, Juana Osme&#241a St, Cebu City, 6000 Cebu",
 				"geometry": {
 	        		"type": "Point",
 	        		"coordinates": {
@@ -1145,7 +1145,7 @@ mock_data_callback(
 				"name": "Tincidunt Inc.",
 				"visits": 417,
 				"rating": 1.5,
-				"vicinity": "Osmeña Blvd, Cebu City, Cebu",
+				"vicinity": "Osme&#241a Blvd, Cebu City, Cebu",
 				"geometry": {
 	        		"type": "Point",
 	        		"coordinates": {
@@ -1252,7 +1252,7 @@ mock_data_callback(
 				"name": "Montes Nascetur Ridiculus Incorporated",
 				"visits": 355,
 				"rating": 1.5,
-				"vicinity": "Juana Osmeña St, Cebu City, 6000 Cebu",
+				"vicinity": "Juana Osme&#241a St, Cebu City, 6000 Cebu",
 				"geometry": {
 	        		"type": "Point",
 	        		"coordinates": {
@@ -1270,7 +1270,7 @@ mock_data_callback(
 				"name": "Vulputate Consulting",
 				"visits": 326,
 				"rating": 4.6,
-				"vicinity": "Pres. Osmeña Boulevard, Cebu City, Cebu",
+				"vicinity": "Pres. Osme&#241a Boulevard, Cebu City, Cebu",
 				"geometry": {
 	        		"type": "Point",
 	        		"coordinates": {
@@ -1608,7 +1608,7 @@ mock_data_callback(
 				"name": "Sociis Natoque Penatibus Limited",
 				"visits": 393,
 				"rating": 3.5,
-				"vicinity": "Osmeña Blvd, Cebu City, 6000 Cebu",
+				"vicinity": "Osme&#241a Blvd, Cebu City, 6000 Cebu",
 				"geometry": {
 	        		"type": "Point",
 	        		"coordinates": {
