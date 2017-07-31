@@ -204,6 +204,9 @@ function showRoute() {
         if (status == google.maps.DirectionsStatus.OK) {
             directionsDisplay.setDirections(response);
             directionsDisplay.setMap(map);
+
+            // display # of records found within the circle
+			$('#found').html(mock_data.length);
         } else {
             document.getElementById('error_container').style.display = 'block';
     		document.getElementById('error_container').innerHTML = 'Please select destination.';
