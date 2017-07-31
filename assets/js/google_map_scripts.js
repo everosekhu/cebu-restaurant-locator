@@ -106,6 +106,7 @@ function createMarker(place) {
         	+ 	'<b>Location:</b> ' + place.vicinity
         	+ 	'<br><b>Type:</b> ' + place.type
         	+ 	'<br><b>Specialty:</b> ' + specialty
+        	+ 	'<br><b>Visits:</b> ' + place.visits
         	+ 	'<br><b>Rating:</b> ' + rating
         	+ 	'<br>'
         + '</div>' +

@@ -6,3 +6,24 @@
     text-align: center;
     font-weight: bold;
 }
+
+div.carousel-inner div.item img {
+	width: 100%;
+	height: 200px;
+}
+
+ul.nav {
+	margin-top: 20px;
+}
+
+div.found_container {
+	margin-top: 20px;
+}
+
+table#analytics_table thead th {
+	text-align: center;
+}
+
+table#analytics_table {
+	margin-top: 20px;
+}
